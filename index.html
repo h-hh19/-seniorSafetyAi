@@ -12,8 +12,12 @@
     <div><canvas id="canvas"></canvas></div>
     <div id="label-container"></div>
 
-    <button onclick="playAudio()" type="button">Play Audio</button>
-    <button onclick="pauseAudio()" type="button">Pause Audio</button>
+    
+    <button onclick="pauseAudio()" type="button">알림음 멈추기</button>
+
+    <button onclick="document.location.href='tel:010-1234-5678'" id="tel"> 
+
+        <a href="tel:010-1234-5678">010-1234-5678로 전화걸기</a> </button>
 
     <script>
     
@@ -85,7 +89,12 @@
                         audio.play()
                         console.log('긴급환자 발생')
                     }, 5000) 
-
+                    // 일정 시간이 지나면 전화가 걸려지고
+                    // 알림 끄기 버튼을 누르면 전화가 가지 않음
+                    var timetel = setTimeout(function(){
+                        const element = document.querySelector('#tel');
+                        element.click();
+                    },37000)
                     
                 }
                 status = "fall"
@@ -102,28 +111,7 @@
             }else{
 
             }
-            //사람의 상태를 파악하는 로직
-            // if(prediction[0].probability.toFixed(2) >= 0.80){
-            //     if(prediction[1].probability.toFixed(2) >= 0.80){
-            //         //팝업창 띄우는 코드 
-            //         //취소버튼 누르면 오디오 재생 정지 코드
-            //         //오디오 30초간 재생코드
-
-            //     }
-            // }
-            // else if(prediction[1].probability.toFixed(2) >= 0.80){
-
-            // }
-
-              
-                   
-                //만약 취소 버튼을 누르면 알림을 알리지 않음
-                //만약 일정 시간 안에 일어서면 알림을 알리지 않음
-                // 만약 15초동안 아무 행동을 하지 않으면 알림을 알림고, 119에 전화함.
-            
-
-
-
+         
 
     
             for (let i = 0; i < maxPredictions; i++) {
@@ -155,10 +143,6 @@
         function pauseAudio() { 
         audio.pause();
           
-        }
-
-        function playAudio() { 
-        audio.play(); 
         }
     </script>
     
