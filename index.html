@@ -5,8 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="intro" id="">
+    
     <div>Teachable Machine Pose Model</div>
     <button type="button" onclick="init()">Start</button>
     <div><canvas id="canvas"></canvas></div>
@@ -15,9 +17,11 @@
     
     <button onclick="pauseAudio()" type="button">알림음 멈추기</button>
 
-    <button onclick="document.location.href='tel:010-1234-5678'" id="tel"> 
+    <button onclick="document.location.href='tel:010-2140-5247'"> 
 
-        <a href="tel:010-1234-5678">010-1234-5678로 전화걸기</a> </button>
+        <a href="tel:010-2140-5247" id="sms">조장한테 문자 보내기</a> </button>
+        <button id="smsStop">문자 보내기 취소</button>
+        
 
     <script>
     
@@ -29,6 +33,7 @@
 
         // 전역 오디오 파일
         var audio = new Audio('try9.mp3');
+        var smsStop = 0;
        
        
         // More API functions here:
@@ -88,13 +93,26 @@
                     setTimeout(function(){
                         audio.play()
                         console.log('긴급환자 발생')
+                        var intro = document.getElementsByClassName('intro'); 
+                        intro.setAttribute('id', 'sabotage')
                     }, 5000) 
-                    // 일정 시간이 지나면 전화가 걸려지고
-                    // 알림 끄기 버튼을 누르면 전화가 가지 않음
+                    
+                    
+
                     var timetel = setTimeout(function(){
-                        const element = document.querySelector('#tel');
-                        element.click();
-                    },37000)
+                        
+                        if(smsStop == 1){
+                            console.log("자동으로 문자 발송을 멈춤니다.")
+                            smsStop = 0;
+                            intro.removeAttribute('id', 'sabotage')
+                        }else{
+                            
+                            const sms = document.querySelector('#sms');
+                            sms.click();
+                        }
+                       
+                        //문자 보내기 기능
+                    },10000)
                     
                 }
                 status = "fall"
@@ -136,12 +154,22 @@
             }
         }
 
-        //취소 버튼
+            
+            const sms_stop = document.getElementById('smsStop')
+            sms_stop.addEventListener('click', function(){
+                smsStop = 1;
+                console.log("문자를 보내지 않겠습니다.");
+                audio.pause();
+            })
 
-       
+        function change_sabotage(){
+
+            document.getElementsByClassName('intro').setAttribute('id', 'sabotage')
+        }
         
         function pauseAudio() { 
         audio.pause();
+       
           
         }
     </script>
