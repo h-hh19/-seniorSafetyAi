@@ -1,6 +1,4 @@
-#sabotage {
-    padding: 10px;
-   
+  .sabotage {
     background: red;
     animation: sabotage 2s infinite;
   }
@@ -9,4 +7,11 @@
     0% {background-color: red;}
     50% {background-color: white;}
     100% {background-color: red;}
+  }
+
+  #sms {
+      color: white;
+    }
+  #sms:hover {
+    text-decoration: none;
   }
