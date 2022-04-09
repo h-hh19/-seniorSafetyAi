@@ -16,7 +16,7 @@
     <div id="label-container"></div>
 
     
-    <button onclick="pauseAudio()" type="button" id="audioStop">문자, 알림 정지</button>
+    <button onclick="pauseAudio()" type="button">알림 정지</button>
     
     <button onclick="document.location.href='sms:010-9947-1206'"> 
         <a id="sms">문자 전송</a> 
@@ -100,7 +100,6 @@
         }
          
         var status = "stand"
-        var smsStop = 0;
         // 상태 파악
         
         async function predict() {
@@ -110,66 +109,68 @@
             // Prediction 2: run input through teachable machine classification model
             const prediction = await model.predict(posenetOutput);
             
-        // fall 사고 감지 기준 및 오디오, 문자, 경고등 출력
+     
 
-         if(prediction[1].probability.toFixed(2) == 1.00){
+
+        if(prediction[0].probability.toFixed(2) == 1.00){
+                if(status == "fall"){
+                    // fall 시고 후 다시 기립 != 긴급상황
+                    console.log("긴급상황 해제");
+                    audio.pause(); // 오디오 끄기
+                    const sabotage_button_cancel = document.querySelector('#sabotage_button_cancel');
+                    sabotage_button_cancel.click(); // 흰 배경으로 바꾸기 
+                    const sms_cancel = document.querySelector('#sms_cancel');
+                    sms_cancel.click(); // 연락처 두절
+                    console.log("연락처 두절")
+                  
+                    
+                }
+                status = "stand"
+            }else if(prediction[1].probability.toFixed(2) == 1.00){
                 if(status == "stand"){
                     setTimeout(function(){
-                        audio.play()
+
                         console.log('긴급환자 발생')
+                        audio.play() // 오디오 재생
                         const sabotage_button = document.querySelector('#sabotage_button');
-                        sabotage_button.click();
+                        sabotage_button.click(); // 빨간 배경으로 바꾸기
                         
                         
                     }, 5000) 
                     
                     // 오디오 출력
 
+                    
+
                     setTimeout(function(){
                         
-                        if(smsStop == 1){
-                            console.log("자동으로 문자 발송을 멈춤니다.")
-                            smsStop = 0;
-                            const sabotage_button_cancel = document.querySelector('#sabotage_button_cancel');
-                            sabotage_button_cancel.click();
-                            sms_stop.click();
-                            const sms_cancel = document.querySelector('#sms_cancel');
-                            sms_cancel.click();
-                            // 문자 전송 취소 및 경고등 끄기
-                        }else{
+                                const sms_submit = document.querySelector('#sms_submit');
+                                sms_submit.click(); // 연락처 연결
+                                console.log("연락처 연결")
 
-                            const sms_submit = document.querySelector('#sms_submit');
-                            sms_submit.click();
-                            //연락처 연결
-                            const sms = document.querySelector('#sms');
-                            sms.click();
-                            //문자 전송
+                                audio.pause(); // 오디오 끄기
+
+                                
+                                const sms = document.querySelector('#sms')
+                                
+                                if(status == "fall"){
+
+                                    sms.click(); //문자 전송
+
+                                }
+
                             
-                        }
-                           
+                            
                         
                     },35000) // 35초 후 문자 전송 
                     
                 }
                 status = "fall"
-            }else if(prediction[0].probability.toFixed(2) == 1.00){
-                if(status == "fall"){
-                    // fall 시고 후 다시 기립 != 긴급상황
-                    
-                    audio.pause();
-                    console.log("긴급상황 해제");
-                    const sabotage_button_cancel = document.querySelector('#sabotage_button_cancel');
-                    sabotage_button_cancel.click();
-                  
-                    
-                }
-                status = "stand"
             }else{
-
+                console.log("상태파악 중")
             }
          
 
-    
             for (let i = 0; i < maxPredictions; i++) {
                 const classPrediction =
                     prediction[i].className + ": " + prediction[i].probability.toFixed(2);
@@ -192,13 +193,6 @@
             }
         }
 
-            
-            const sms_stop = document.getElementById('audioStop')
-            sms_stop.addEventListener('click', function(){
-                smsStop = 1;
-                console.log("문자를 보내지 않겠습니다.");
-                audio.pause();
-            })     //문자 발송 취소 함수
         
         function pauseAudio() { 
         audio.pause(); 
